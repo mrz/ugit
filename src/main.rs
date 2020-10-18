@@ -1,9 +1,12 @@
 use clap::{App, Arg};
+use std::{env, io};
+
+mod data;
 
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 const NAME: &'static str = env!("CARGO_PKG_NAME");
 
-fn main() {
+fn main() -> io::Result<()> {
     let matches = App::new(NAME)
         .version(VERSION)
         .about("DIY Git")
@@ -15,10 +18,17 @@ fn main() {
         .get_matches();
 
     if let Some(_) = matches.value_of("init") {
-        init();
+        init()?;
+        println!(
+            "Initialized empty ugit repository in {}/{}",
+            env::current_dir()?.display(),
+            data::GIT_DIR
+        );
     }
+
+    Ok(())
 }
 
-fn init() {
-    println!("Init");
+fn init() -> io::Result<()> {
+    data::init()
 }
